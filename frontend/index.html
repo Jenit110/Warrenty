@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>warrenty Form</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+</head>
+<body class="p-4">
+    <h1 class="mb-4">Warranty Information</h1>
+     <form id="warrantyForm">
+      <div class="mb-3">
+        <label for="customer_name" class="form-label">Name *</label>
+        <input type="text" id="customer_name" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="customer_phone_number" class="form-label"
+          >Phone Number *</label
+        >
+        <input
+          type="text"
+          id="customer_phone_number"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="customer_email" class="form-label">Email *</label>
+        <input type="email" id="customer_email" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="product_purchased" class="form-label"
+          >Product Purchased *</label
+        >
+        <select id="product_purchased" class="form-select" required>
+          <option value="">Select a product</option>
+          <option value="product1">Product 1</option>
+          <option value="product2">Product 2</option>
+          <option value="product3">Product 3</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="order_number" class="form-label">Order Number *</label>
+        <input type="text" id="order_number" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="purchased_from" class="form-label">Purchased From *</label>
+        <select id="purchased_from" class="form-select" required>
+          <option value="">Choose an option</option>
+          <option value="amazon">Amazon</option>
+          <option value="flipkart">Flipkart</option>
+          <option value="offline">Offline</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="reset" class="btn btn-secondary">Reset</button>
+    </form>
+
+   
+    <script>
+
+        document.getElementById('warrantyForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect the input values
+            const data = {
+                customer_Name: document.getElementById('customer_name').value,
+                customer_phone_number: document.getElementById('customer_phone_number').value,
+                customer_email: document.getElementById('customer_email').value,
+                product_purchased: document.getElementById('product_purchased').value,
+                order_number: document.getElementById('order_number').value,
+                purchase_from: document.getElementById('purchased_from').value
+            };
+
+            for (let key in data) {
+                if (!data[key]) {
+                    alert("Please fill all fields.");
+                    return;
+                }
+            }
+
+
+            fetch("http://127.0.0.1:3000/api/warranty/submit_warranty", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success || data.message) {
+                        alert(data.message || "Warranty submitted successfully!");
+                        document.getElementById('warrantyForm').reset(); // Reset the form
+                    } else {
+                        alert("Submission failed: " + (data.message || "Unknown error"));
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert("Submission failed.");
+                });
+        });
+
+    </script>
+
+    </body> 
+
+</html>
